@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Медийный Чемпион — Отзывы и кейсы</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #6B2FA0;
+    --purple-dark: #4A1D73;
+    --purple-deep: #2D1254;
+    --purple-light: #9B5FD0;
+    --orange: #FF6B00;
+    --orange-light: #FF9040;
+    --orange-glow: #FFB070;
+    --gold: #FFD700;
+    --bg: #0A0414;
+    --bg-card: #16102A;
+    --text: #F0E6FF;
+    --text-muted: #9B8AB8;
+    --radius: 20px;
+    --radius-sm: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Manrope', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .ambient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  .ambient::before {
+    content: ''; position: absolute;
+    top: -20%; left: -15%; width: 60vw; height: 60vw;
+    background: radial-gradient(circle, rgba(107,47,160,0.12) 0%, transparent 65%);
+  }
+  .ambient::after {
+    content: ''; position: absolute;
+    bottom: -15%; right: -10%; width: 50vw; height: 50vw;
+    background: radial-gradient(circle, rgba(255,107,0,0.06) 0%, transparent 65%);
+  }
+  section { position: relative; z-index: 1; }
+
+  /* LOGO BAR */
+  .logo-bar {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 28px 20px 0;
+    animation: fadeDown 0.4s ease-out;
+  }
+  .logo-bar img {
+    height: 60px; width: auto;
+  }
+  /* fallback text logo if image not loaded */
+  .logo-bar__text {
+    display: none;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 22px; font-weight: 900;
+    background: linear-gradient(135deg, var(--purple-light), var(--orange));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .logo-bar img[src=""] ~ .logo-bar__text,
+  .logo-bar img:not([src]) ~ .logo-bar__text { display: block; }
+
+  /* HERO */
+  .hero { text-align: center; padding: 24px 20px 20px; }
+  .hero__title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(26px, 5.5vw, 48px);
+    font-weight: 900; line-height: 1.15;
+    margin-bottom: 14px;
+    animation: fadeDown 0.6s ease-out 0.1s both;
+  }
+  .hero__title span {
+    background: linear-gradient(135deg, var(--orange), var(--orange-glow));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero__sub {
+    font-size: 16px; color: var(--text-muted);
+    max-width: 560px; margin: 0 auto; line-height: 1.6;
+    animation: fadeDown 0.6s ease-out 0.2s both;
+  }
+
+  /* PROMO */
+  .promo {
+    max-width: 900px; margin: 24px auto 0; padding: 0 20px;
+    animation: fadeDown 0.7s ease-out 0.3s both;
+  }
+  .promo__box {
+    position: relative; border-radius: var(--radius); overflow: hidden;
+    border: 2px solid var(--orange);
+    box-shadow: 0 6px 36px rgba(255,107,0,0.18);
+    background: #000;
+  }
+  .promo__tag {
+    position: absolute; top: 14px; left: 14px; z-index: 5;
+    background: var(--orange); color: #fff;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 100px;
+    pointer-events: none;
+  }
+  .promo__box video { width: 100%; display: block; aspect-ratio: 16/9; object-fit: cover; background: #000; }
+
+  /* NAV PILLS */
+  .nav-pills {
+    display: flex; justify-content: center; gap: 6px;
+    padding: 32px 16px 0; flex-wrap: wrap;
+  }
+  .pill {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 11px; font-weight: 600;
+    padding: 10px 20px; border-radius: 100px;
+    border: 2px solid rgba(155,95,208,0.25);
+    background: transparent; color: var(--text-muted);
+    cursor: pointer; transition: all 0.3s; text-decoration: none;
+  }
+  .pill:hover { border-color: var(--purple-light); color: var(--text); }
+
+  /* SECTION HEADING */
+  .sh { text-align: center; padding: 48px 20px 6px; }
+  .sh__eyebrow {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 11px; font-weight: 600;
+    color: var(--orange); letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .sh__title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(20px, 4vw, 34px);
+    font-weight: 800; line-height: 1.2;
+  }
+  .sh__desc {
+    font-size: 15px; color: var(--text-muted);
+    max-width: 520px; margin: 10px auto 0; line-height: 1.6;
+  }
+
+  /* CASES */
+  .cases-grid {
+    max-width: 1100px; margin: 20px auto 0; padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 16px;
+  }
+  .case-card {
+    background: var(--bg-card); border-radius: var(--radius-sm);
+    padding: 22px; border: 1px solid rgba(155,95,208,0.12);
+    transition: all 0.35s;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .case-card:hover { border-color: var(--purple-light); transform: translateY(-3px); box-shadow: 0 8px 28px rgba(107,47,160,0.12); }
+  .case-num {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+    color: #fff; font-family: 'Unbounded', sans-serif;
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .case-card h3 { font-family: 'Unbounded', sans-serif; font-size: 12px; font-weight: 700; margin-bottom: 5px; line-height: 1.4; }
+  .case-card p { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+  /* CAROUSEL SHARED */
+  .carousel-block { max-width: 1400px; margin: 20px auto 0; padding: 0 20px; }
+  .carousel {
+    display: flex; gap: 18px;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 14px 6px 22px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .carousel::-webkit-scrollbar { height: 5px; }
+  .carousel::-webkit-scrollbar-track { background: rgba(155,95,208,0.08); border-radius: 10px; }
+  .carousel::-webkit-scrollbar-thumb { background: var(--purple-light); border-radius: 10px; }
+  .cnav { display: flex; justify-content: center; gap: 12px; margin-top: 6px; }
+  .cnav button {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 2px solid rgba(155,95,208,0.25);
+    background: var(--bg-card); color: var(--text);
+    font-size: 18px; cursor: pointer; transition: all 0.3s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cnav button:hover { border-color: var(--orange); color: var(--orange); transform: scale(1.08); }
+
+  /* VIDEO CARD */
+  .vc {
+    flex: 0 0 220px; scroll-snap-align: start;
+    background: #000; border-radius: var(--radius-sm);
+    overflow: hidden; border: 1px solid rgba(155,95,208,0.12);
+    transition: all 0.35s;
+  }
+  .vc:hover { transform: translateY(-4px); border-color: var(--purple-light); box-shadow: 0 8px 28px rgba(107,47,160,0.12); }
+  .vc video { width: 100%; aspect-ratio: 9/16; display: block; object-fit: cover; background: #000; }
+  .vc__info { padding: 12px 16px; }
+  .vc__name { font-family: 'Unbounded', sans-serif; font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .vc__desc { font-size: 11px; color: var(--text-muted); }
+
+  /* CIRCLE CARD */
+  .cc {
+    width: 220px;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; padding: 26px 16px;
+    background: var(--bg-card); border-radius: var(--radius-sm);
+    border: 1px solid rgba(155,95,208,0.12);
+    transition: all 0.35s;
+  }
+  .cc:hover { transform: translateY(-4px); border-color: var(--orange); box-shadow: 0 8px 28px rgba(255,107,0,0.1); }
+  .cc__ring {
+    width: 160px; height: 160px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple), var(--orange));
+    padding: 3px; margin-bottom: 14px;
+  }
+  .cc__inner { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: var(--bg); }
+  .cc__inner video { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer; }
+  .cc__name { font-family: 'Unbounded', sans-serif; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+  .cc__desc { font-size: 11px; color: var(--text-muted); }
+
+  /* Circles centered grid */
+  .circles-grid {
+    display: flex; justify-content: center; gap: 20px;
+    flex-wrap: wrap; padding: 16px 6px 22px;
+  }
+
+  /* TEXT REVIEWS */
+  .reviews-grid {
+    max-width: 1100px; margin: 20px auto 0; padding: 0 20px;
+    columns: 2; column-gap: 16px;
+  }
+  .tr {
+    break-inside: avoid;
+    background: var(--bg-card); border-radius: var(--radius-sm);
+    padding: 26px 22px; margin-bottom: 16px;
+    border: 1px solid rgba(155,95,208,0.12);
+    transition: all 0.35s;
+  }
+  .tr:hover { border-color: var(--purple-light); box-shadow: 0 6px 24px rgba(107,47,160,0.1); }
+  .tr__stars { display: flex; gap: 2px; margin-bottom: 8px; }
+  .tr__stars svg { width: 13px; fill: var(--orange); }
+  .tr__text { font-size: 13px; line-height: 1.75; margin-bottom: 14px; }
+  .tr__author { display: flex; align-items: center; gap: 10px; padding-top: 12px; border-top: 1px solid rgba(155,95,208,0.12); }
+  .tr__av {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple), var(--orange));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Unbounded', sans-serif; font-size: 14px; font-weight: 700;
+    color: #fff; flex-shrink: 0;
+  }
+  .tr__name { font-family: 'Unbounded', sans-serif; font-size: 11px; font-weight: 600; }
+  .tr__role { font-size: 10px; color: var(--text-muted); }
+
+  /* PHOTO GALLERY */
+  .gallery {
+    max-width: 1100px; margin: 20px auto 0; padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 10px;
+  }
+  .gallery img {
+    width: 100%; aspect-ratio: 1; object-fit: cover;
+    border-radius: 12px; border: 1px solid rgba(155,95,208,0.1);
+    transition: all 0.35s; cursor: pointer;
+  }
+  .gallery img:hover { transform: scale(1.03); border-color: var(--orange); box-shadow: 0 6px 22px rgba(255,107,0,0.12); }
+
+  /* ===== BONUSES & PRIZES ===== */
+  .bonuses {
+    max-width: 1000px; margin: 0 auto; padding: 0 20px;
+  }
+  .bonuses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px; margin-top: 24px;
+  }
+  .bonus-card {
+    background: linear-gradient(145deg, var(--bg-card), rgba(107,47,160,0.08));
+    border-radius: var(--radius-sm);
+    padding: 28px 24px;
+    border: 1px solid rgba(155,95,208,0.15);
+    transition: all 0.35s;
+    text-align: center;
+  }
+  .bonus-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(255,215,0,0.08);
+  }
+  .bonus-card__icon {
+    font-size: 40px;
+    margin-bottom: 14px;
+    display: block;
+  }
+  .bonus-card__title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 14px; font-weight: 700;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, var(--gold), var(--orange-glow));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .bonus-card__desc {
+    font-size: 13px; color: var(--text-muted); line-height: 1.6;
+  }
+  .bonus-card__partner {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--purple-light);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: rgba(155,95,208,0.1);
+    padding: 4px 12px;
+    border-radius: 100px;
+  }
+
+  /* ===== MOTIVATION FOOTER ===== */
+  .motivation {
+    max-width: 700px; margin: 50px auto 0; padding: 0 20px 60px;
+    text-align: center;
+  }
+  .motivation__box {
+    background: linear-gradient(145deg, var(--purple-deep), rgba(107,47,160,0.15));
+    border: 1px solid rgba(155,95,208,0.2);
+    border-radius: var(--radius); padding: 44px 32px;
+  }
+  .motivation__emoji { font-size: 48px; margin-bottom: 16px; display: block; }
+  .motivation__title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(18px, 3.5vw, 26px);
+    font-weight: 800; margin-bottom: 14px; line-height: 1.3;
+  }
+  .motivation__title span { color: var(--orange); }
+  .motivation__text {
+    font-size: 15px; color: var(--text-muted); line-height: 1.7;
+    max-width: 500px; margin: 0 auto;
+  }
+
+  /* HOWTO */
+  .howto {
+    max-width: 900px; margin: 0 auto 50px; padding: 0 20px;
+    position: relative; z-index: 1;
+  }
+  .howto__box {
+    background: rgba(107,47,160,0.08); border: 1px solid rgba(155,95,208,0.15);
+    border-radius: var(--radius); padding: 28px 24px;
+  }
+  .howto__title { font-family: 'Unbounded', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 14px; color: var(--orange); }
+  .howto code { background: rgba(155,95,208,0.15); padding: 2px 7px; border-radius: 5px; font-size: 11px; color: var(--purple-light); }
+  .howto p { font-size: 12px; color: var(--text-muted); line-height: 1.8; margin-bottom: 6px; }
+  .howto strong { color: var(--text); }
+
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 700px) {
+    .reviews-grid { columns: 1; }
+    .vc { flex: 0 0 180px; }
+    .cc { width: 170px; }
+    .gallery { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+    .bonuses-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<!-- LOGO -->
+<div class="logo-bar">
+  <!-- Замени src на путь к логотипу: logo.png -->
+  <img src="logo.png" alt="Медийный Чемпион" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+  <div class="logo-bar__text">МЕДИЙНЫЙ ЧЕМПИОН</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <h1 class="hero__title">Реальные <span>результаты</span> наших учеников</h1>
+  <p class="hero__sub">Кейсы, видеоотзывы и истории ребят из 1-го и 2-го сезонов. Всё, что мы обещаем — вот оно, в реальности.</p>
+</section>
+
+<!-- PROMO -->
+<section class="promo">
+  <div class="promo__box">
+    <div class="promo__tag">Промо</div>
+    <video src="videos/promo.mp4" controls playsinline preload="metadata"></video>
+  </div>
+</section>
+
+<!-- NAV -->
+<nav class="nav-pills">
+  <a class="pill" href="#cases">🏆 Кейсы</a>
+  <a class="pill" href="#video-reviews">🎬 Видеоотзывы</a>
+  <a class="pill" href="#circles">⭕ Кружки</a>
+  <a class="pill" href="#text-reviews">💬 Отзывы</a>
+  <a class="pill" href="#photos">📸 Фото</a>
+  <a class="pill" href="#bonuses">🎁 Бонусы 3 сезона</a>
+</nav>
+
+<!-- КЕЙСЫ -->
+<section id="cases">
+  <div class="sh">
+    <div class="sh__eyebrow">Доказательства</div>
+    <div class="sh__title">Кейсы и достижения проекта</div>
+    <div class="sh__desc">Каждый кейс — реальная история ученика. Мы не обещаем — мы показываем</div>
+  </div>
+  <div class="cases-grid">
+    <div class="case-card"><div class="case-num">1</div><div><h3>Подкаст с Эдамсом</h3><p>Ученик сам задавал вопросы звезде медиафутбола, прочувствовал съёмочный процесс и исполнил мечту — побывать в кадре и вести свой контент</p></div></div>
+    <div class="case-card"><div class="case-num">2</div><div><h3>«Доброе утро, малыши»</h3><p>Лучшие ученики увидели создание телепередачи изнутри, познакомились с ведущим, сняли контент и получили массу эмоций</p></div></div>
+    <div class="case-card"><div class="case-num">3</div><div><h3>Интервью у Бориса Ротенберга</h3><p>Ученик из Ставрополя (Академия СКА Ростов) взял интервью на большом форуме, прокачав навыки на невероятный уровень</p></div></div>
+    <div class="case-card"><div class="case-num">4</div><div><h3>Международный опыт в Узбекистане</h3><p>Ребята встретились с Unwanted Boys: сходили на матч, посетили раздевалку и окунулись в атмосферу профессионального медиаклуба</p></div></div>
+    <div class="case-card"><div class="case-num">5</div><div><h3>Архип Кулешов и звёзды</h3><p>После урока увиделся с Фёдором Смоловым, взял интервью и познакомился лично. Также взял интервью у Азамата Мусагалиева</p></div></div>
+    <div class="case-card"><div class="case-num">6</div><div><h3>Контракт со спортивным брендом</h3><p>Максим Новиков, хоккеист «Красной машины», после обучения заключил личный контракт со спортивным брендом по экипировке</p></div></div>
+    <div class="case-card"><div class="case-num">7</div><div><h3>Фестиваль «Жизнь в хоккее»</h3><p>Совместно с «Красной машиной» организовали масштабный фестиваль на «СКА Арене» в Питере</p></div></div>
+    <div class="case-card"><div class="case-num">8</div><div><h3>Партнёрство с Кубком Колыванова</h3><p>Награждение лучшего игрока сертификатом на обучение, подарки и интерактивные челленджи</p></div></div>
+    <div class="case-card"><div class="case-num">9</div><div><h3>Athletic Cup во Владикавказе</h3><p>«Медийный чемпион» выступил организатором мероприятия — шоу-программа, мастер-классы и развлечения</p></div></div>
+  </div>
+</section>
+
+<!-- ВИДЕООТЗЫВЫ -->
+<section id="video-reviews">
+  <div class="sh">
+    <div class="sh__eyebrow">Видео</div>
+    <div class="sh__title">Видеоотзывы учеников и родителей</div>
+  </div>
+  <div class="carousel-block">
+    <div class="carousel" id="car-video">
+      <div class="vc"><video src="videos/review-01.mp4" controls playsinline preload="metadata"></video></div>
+      <div class="vc"><video src="videos/review-02.mp4" controls playsinline preload="metadata"></video></div>
+      <div class="vc"><video src="videos/review-03.mp4" controls playsinline preload="metadata"></video></div>
+      <div class="vc"><video src="videos/review-04.mp4" controls playsinline preload="metadata"></video></div>
+      <div class="vc"><video src="videos/review-05.mp4" controls playsinline preload="metadata"></video></div>
+      <div class="vc"><video src="videos/review-06.mp4" controls playsinline preload="metadata"></video></div>
+      <div class="vc"><video src="videos/review-07.mp4" controls playsinline preload="metadata"></video></div>
+      <div class="vc"><video src="videos/review-09.mp4" controls playsinline preload="metadata"></video></div>
+      <div class="vc"><video src="videos/review-10.mp4" controls playsinline preload="metadata"></video></div>
+    </div>
+    <div class="cnav"><button onclick="scroll_c('car-video',-1)">←</button><button onclick="scroll_c('car-video',1)">→</button></div>
+  </div>
+</section>
+
+<!-- КРУЖКИ -->
+<section id="circles">
+  <div class="sh">
+    <div class="sh__eyebrow">Telegram</div>
+    <div class="sh__title">Кружки от участников</div>
+  </div>
+  <div class="carousel-block">
+    <div class="circles-grid" id="car-circles">
+      <div class="cc"><div class="cc__ring"><div class="cc__inner"><video src="circles/circle-01.mp4" playsinline preload="metadata" loop onclick="this.paused?this.play():this.pause()"></video></div></div></div>
+      <div class="cc"><div class="cc__ring"><div class="cc__inner"><video src="circles/circle-02.mp4" playsinline preload="metadata" loop onclick="this.paused?this.play():this.pause()"></video></div></div></div>
+      <div class="cc"><div class="cc__ring"><div class="cc__inner"><video src="circles/circle-03.mp4" playsinline preload="metadata" loop onclick="this.paused?this.play():this.pause()"></video></div></div></div>
+      <div class="cc"><div class="cc__ring"><div class="cc__inner"><video src="circles/circle-04.mp4" playsinline preload="metadata" loop onclick="this.paused?this.play():this.pause()"></video></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ТЕКСТОВЫЕ ОТЗЫВЫ -->
+<section id="text-reviews">
+  <div class="sh">
+    <div class="sh__eyebrow">Слово родителям и ученикам</div>
+    <div class="sh__title">Отзывы</div>
+  </div>
+  <div class="reviews-grid">
+    <div class="tr"><div class="tr__stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div><div class="tr__text">Хочу сказать огромное спасибо за организацию курса! Очень внимательное общение с родителем, потрясающий состав спикеров — сын был в восторге увидеть героев так близко! Дане 8 лет, но он был очень вовлечён. Артём — отдельная жемчужина проекта, большой профессионал с уникальным навыком общения с детьми!</div><div class="tr__author"><div class="tr__av">Д</div><div><div class="tr__name">Мама Дани</div></div></div></div>
+    <div class="tr"><div class="tr__stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div><div class="tr__text">Мы подарили обучение Саше на день рождения — это самый полезный подарок за все 10 лет! Саша бежал на все лекции, а после выходил с горящими глазами. После обучения остаётся структура и понимание — как снимать, что снимать, как монтировать. После выпускного первым делом попросился на третий сезон!</div><div class="tr__author"><div class="tr__av">С</div><div><div class="tr__name">Мама Саши</div></div></div></div>
+    <div class="tr"><div class="tr__stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div><div class="tr__text">Очень крутой проект! Стеснительный ребёнок стал вовлечённо участвовать в уроках, просить снимать и выполнять задания в срок. Теперь Тимур не стесняется постов, ушёл страх камеры. Появилась мечта — участвовать в таких проектах и снимать больше контента!</div><div class="tr__author"><div class="tr__av">Т</div><div><div class="tr__name">Мама Тимура</div></div></div></div>
+    <div class="tr"><div class="tr__stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div><div class="tr__text">Мой сын Георгий был участником. Артём невероятно внимателен — постоянно интересовался, всё ли получается. Ребята научились выступать перед камерой, работать с нейросетями, уверенно говорить, прокачали креативность, освоили съёмку и монтаж. На каждом уроке — топовые навыки и огненный заряд мотивации!</div><div class="tr__author"><div class="tr__av">Г</div><div><div class="tr__name">Мама Георгия</div></div></div></div>
+    <div class="tr"><div class="tr__stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div><div class="tr__text">За время интенсива мы с Мишей создали 9 роликов, 4 из них очень хорошо залетели и с них пришло 20 подписчиков! Очень полезно и интересно!</div><div class="tr__author"><div class="tr__av">М</div><div><div class="tr__name">Мама Миши</div></div></div></div>
+    <div class="tr"><div class="tr__stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div><div class="tr__text">Благодаря проекту научился не бояться камеры, правильно снимать и монтировать видео, быть самим собой в кадре. Было классно встретиться со звёздами, пообщаться, сделать фото и получить автограф на память!</div><div class="tr__author"><div class="tr__av">У</div><div></div></div></div>
+    <div class="tr"><div class="tr__stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div><div class="tr__text">Это не просто проект, а настоящий запуск в новую орбиту! Невероятная плотность полезной информации, практические инструменты и сообщество единомышленников. Отдельный респект за продуманность каждого этапа!</div><div class="tr__author"><div class="tr__av">Р</div><div></div></div></div>
+    <div class="tr"><div class="tr__stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div><div class="tr__text">Спасибо за проект, который открыл новые горизонты моему ребёнку, показал, что мечты сбываются, помог поверить в свои силы и дал много идей для дальнейшего развития!</div><div class="tr__author"><div class="tr__av">Р</div><div></div></div></div>
+    <div class="tr"><div class="tr__stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div><div class="tr__text">Спасибо за уроки, за то что раскрыли моего ребёнка, за интересные истории, факты, личности. Крутой проект вообще получился!</div><div class="tr__author"><div class="tr__av">Р</div><div></div></div></div>
+    <div class="tr"><div class="tr__stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div><div class="tr__text">Я продвинула свои качества в медиа, больше монтирую видео и упаковала свой проект. Очень ждала Алину Габуеву! Хочу ещё снять больше видео!</div><div class="tr__author"><div class="tr__av">У</div><div></div></div></div>
+    <div class="tr"><div class="tr__stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div><div class="tr__text">Я за две недели очень много открыла — комментаторство, журналистика. Научилась собирать себя в нужный момент, поняла, как круто говорить, чтобы тебя слышали.</div><div class="tr__author"><div class="tr__av">У</div><div></div></div></div>
+    <div class="tr"><div class="tr__stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div><div class="tr__text">Вы Мега-профессионал в своём деле! Большая честь для нас участие в этом супер-проекте!</div><div class="tr__author"><div class="tr__av">Р</div><div></div></div></div>
+    <div class="tr"><div class="tr__stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div><div class="tr__text">Ещё раз огромное спасибо! Он конечно ещё маловат, но уверена — год-два и будет вспоминать тренинги, и все знания будут 100% уже иначе работать. За ваш труд — низкий поклон!</div><div class="tr__author"><div class="tr__av">Р</div><div></div></div></div>
+  </div>
+</section>
+
+<!-- ФОТО -->
+<section id="photos">
+  <div class="sh">
+    <div class="sh__eyebrow">Галерея</div>
+    <div class="sh__title">Фотографии с проекта</div>
+  </div>
+  <div class="gallery">
+    <img src="photos/photo-01.jpg" alt="" loading="lazy">
+    <img src="photos/photo-02.jpg" alt="" loading="lazy">
+    <img src="photos/photo-03.jpg" alt="" loading="lazy">
+    <img src="photos/photo-04.jpg" alt="" loading="lazy">
+    <img src="photos/photo-05.jpg" alt="" loading="lazy">
+    <img src="photos/photo-06.jpg" alt="" loading="lazy">
+    <img src="photos/photo-07.jpg" alt="" loading="lazy">
+    <img src="photos/photo-08.jpg" alt="" loading="lazy">
+    <img src="photos/photo-09.jpg" alt="" loading="lazy">
+    <img src="photos/photo-10.jpg" alt="" loading="lazy">
+    <img src="photos/photo-11.jpg" alt="" loading="lazy">
+    <img src="photos/photo-12.jpg" alt="" loading="lazy">
+    <img src="photos/photo-13.jpg" alt="" loading="lazy">
+    <img src="photos/photo-14.jpg" alt="" loading="lazy">
+    <img src="photos/photo-15.jpg" alt="" loading="lazy">
+    <img src="photos/photo-16.jpg" alt="" loading="lazy">
+  </div>
+</section>
+
+<!-- ===== БОНУСЫ И ПОДАРКИ 3 СЕЗОНА ===== -->
+<section id="bonuses">
+  <div class="sh">
+    <div class="sh__eyebrow">Эксклюзив 3-го сезона</div>
+    <div class="sh__title">Бонусы и подарки от партнёров</div>
+    <div class="sh__desc">Участники 3-го сезона получают не только знания, но и крутые подарки от наших партнёров</div>
+  </div>
+  <div class="bonuses">
+    <div class="bonuses-grid">
+
+      <div class="bonus-card">
+        <span class="bonus-card__icon">🥤</span>
+        <div class="bonus-card__title">Блендеры NutriBullet</div>
+        <div class="bonus-card__desc">Профессиональные блендеры для приготовления смузи и спортивного питания — идеальный инструмент для юного чемпиона</div>
+        <div class="bonus-card__partner">Партнёр: NutriBullet</div>
+      </div>
+
+      <div class="bonus-card">
+        <span class="bonus-card__icon">⚽</span>
+        <div class="bonus-card__title">Мячи от «Мой Мяч»</div>
+        <div class="bonus-card__desc">Качественные футбольные мячи в подарок — тренируйся с лучшим инвентарём</div>
+        <div class="bonus-card__partner">Партнёр: Мой Мяч</div>
+      </div>
+
+      <div class="bonus-card">
+        <span class="bonus-card__icon">👕</span>
+        <div class="bonus-card__title">Футболки с автографами звёзд</div>
+        <div class="bonus-card__desc">Фирменные футболки проекта с автографами наставников и звёздных гостей — коллекционная ценность</div>
+        <div class="bonus-card__partner">От проекта</div>
+      </div>
+
+      <div class="bonus-card">
+        <span class="bonus-card__icon">🎤</span>
+        <div class="bonus-card__title">Стажировка корреспондентом на «НаПике»</div>
+        <div class="bonus-card__desc">Владельцы VIP-пакета получают гарантированную стажировку корреспондентом во 2-м сезоне Детской лиги «НаПике» — настоящая работа в кадре</div>
+        <div class="bonus-card__partner">VIP-тариф</div>
+      </div>
+
+      <div class="bonus-card">
+        <span class="bonus-card__icon">🏒</span>
+        <div class="bonus-card__title">Подарки от «Первого хоккейного бюро»</div>
+        <div class="bonus-card__desc">Спортивные аксессуары и сувениры от партнёра проекта для любителей хоккея</div>
+        <div class="bonus-card__partner">Партнёр: Первое хоккейное бюро</div>
+      </div>
+
+      <div class="bonus-card">
+        <span class="bonus-card__icon">🎬</span>
+        <div class="bonus-card__title">Приглашения в студии и на мероприятия</div>
+        <div class="bonus-card__desc">Лучшие ученики получают приглашения на реальные съёмки, в телевизионные студии и на крупные спортивные мероприятия от наставников</div>
+        <div class="bonus-card__partner">От наставников</div>
+      </div>
+
+      <div class="bonus-card">
+        <span class="bonus-card__icon">📱</span>
+        <div class="bonus-card__title">Доступ в закрытое сообщество кастингов</div>
+        <div class="bonus-card__desc">Участники получают доступ к эксклюзивным кастингам, пробам и возможностям в медиа — шанс попасть в настоящие проекты</div>
+        <div class="bonus-card__partner">Тарифы «Продвижение» и «Мастер»</div>
+      </div>
+
+      <div class="bonus-card">
+        <span class="bonus-card__icon">🌐</span>
+        <div class="bonus-card__title">Бонусный урок английского</div>
+        <div class="bonus-card__desc">Учим давать интервью на английском по правилу 3S — коротко, умно и с улыбкой. Готовые фразы для международной прессы</div>
+        <div class="bonus-card__partner">Спикер: Елена Тарасова</div>
+      </div>
+
+      <div class="bonus-card">
+        <span class="bonus-card__icon">🧠</span>
+        <div class="bonus-card__title">Урок спортивной психологии</div>
+        <div class="bonus-card__desc">Настрой на победу, управление эмоциями, восстановление после нагрузок — инструменты для чемпиона и его родителей</div>
+        <div class="bonus-card__partner">Спикер: Екатерина Шалаева</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- МОТИВАЦИЯ -->
+<section>
+  <div class="motivation">
+    <div class="motivation__box">
+      <span class="motivation__emoji">🚀</span>
+      <div class="motivation__title">Всё, что вы видели — <span>реальность</span></div>
+      <div class="motivation__text">Это не просто обучение. Это возможность для вашего ребёнка раскрыть потенциал, встретить кумиров и сделать первый шаг к медийной карьере. 3-й сезон будет ещё мощнее — присоединяйтесь!</div>
+    </div>
+  </div>
+</section>
+
+
+
+<script>
+function scroll_c(id, dir) {
+  const c = document.getElementById(id);
+  const w = c.firstElementChild.offsetWidth + 18;
+  c.scrollBy({ left: dir * w * 2, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
